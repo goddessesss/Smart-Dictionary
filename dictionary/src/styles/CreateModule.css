@@ -1,0 +1,43 @@
+.create-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border: 2px solid #ebe8e8;
+    border-radius: 8px;
+  }
+  
+  .module-info-label {
+    font-size: 20px;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .form-section {
+    margin-bottom: 20px;
+  }
+  
+  .module-description {
+    margin-top: 20px;
+  }
+  
+  .word-pair-label {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .translation-word-margin {
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  
+  .add-word-button {
+    margin-top: 20px;
+  }
+  
+  .submit-button {
+    width: 100%;
+  }
+  

@@ -1,0 +1,66 @@
+.main-page-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .title , .worlds-label , .create-label {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #333;
+  }
+  
+  .section-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 24px;
+    color: #555;
+  }
+  
+  .main-page,
+  .recommend-page {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .container {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 24px;
+    min-height: 180px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+  
+  .container-label {
+    font-size: 20px;
+    font-weight: 500;
+    color: #5807C2;
+    margin-bottom: 8px;
+  }
+  
+  .container-count {
+    font-size: 16px;
+    color: #777;
+  }
+  
+  .creator-info {
+    display: flex;
+    margin-top: 8px;
+    color: #555;
+  }
+  
+  .creator-info i {
+    margin-right: 8px;
+    color: #5807C2;
+  }
+  

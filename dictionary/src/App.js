@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './component/header';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import MainPage from './pages/MainPage';
+import ModuleDetail from './pages/ModuleDetail';
+import TestPage from './pages/TestPage';
+import CreateModule from './pages/CreateModule';
+import AuthPage from './pages/AuthPage';
+import './App.css'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header/>
+      <Router>
+        <Routes>
+          <Route path='/' element={<MainPage/>} />
+          <Route path='detail' element={<ModuleDetail/>} />
+          <Route path='test' element={<TestPage/>} />
+          <Route path='create' element={<CreateModule/>} />
+          <Route path='login' element={<AuthPage/>} />
+        </Routes>
+      </Router>
+    
     </div>
   );
 }
