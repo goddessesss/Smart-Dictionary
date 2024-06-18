@@ -1,13 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import '../styles/CreateModule.css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { createModule } from '../http/moduleApi';
+import { useAuth } from '../context/AuthContext';
+import { getLanguages } from '../http/languageApi';
+import '../styles/CreateModule.css';
 
 export default function CreateModule() {
+  const { userId } = useAuth();
+
   const [moduleName, setModuleName] = useState('');
   const [moduleDescription, setModuleDescription] = useState('');
   const [wordPairs, setWordPairs] = useState([{ word: '', translation: '' }]);
+  const [languages, setLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const fetchLanguages = async () => {
+    try {
+      const languagesData = await getLanguages();
+      setLanguages(languagesData);
+    } catch (error) {
+      console.error('Error fetching languages:', error);
+      setError('Failed to fetch languages');
+    }
+  };
 
   const handleModuleNameChange = (e) => {
     setModuleName(e.target.value);
@@ -33,8 +55,33 @@ export default function CreateModule() {
     setWordPairs([...wordPairs, { word: '', translation: '' }]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const newModule = {
+        name: moduleName,
+        description: moduleDescription,
+        userId: userId,
+        words: wordPairs.map(pair => ({
+          name: pair.word,
+          userId: userId,
+          translations: [
+            {
+              languageIso: selectedLanguage,
+              translationText: pair.translation
+            }
+          ]
+        }))
+      };
+
+      await createModule(newModule);
+      alert('Module created successfully'); 
+      window.location.href = '/module'; 
+    } catch (error) {
+      console.error('Error creating module:', error);
+      setError('Failed to create module');
+    }
   };
 
   return (
@@ -50,6 +97,7 @@ export default function CreateModule() {
               placeholder="Enter module name"
               value={moduleName}
               onChange={handleModuleNameChange}
+              required
             />
           </Form.Group>
 
@@ -61,6 +109,7 @@ export default function CreateModule() {
               placeholder="Enter module description"
               value={moduleDescription}
               onChange={handleModuleDescriptionChange}
+              required
             />
           </Form.Group>
         </div>
@@ -76,6 +125,7 @@ export default function CreateModule() {
                   placeholder="Enter word"
                   value={pair.word}
                   onChange={(e) => handleWordChange(index, e)}
+                  required
                 />
               </Form.Group>
               <Form.Group controlId={`translation-${index}`}>
@@ -85,14 +135,34 @@ export default function CreateModule() {
                   placeholder="Enter translation"
                   value={pair.translation}
                   onChange={(e) => handleTranslationChange(index, e)}
+                  required
                 />
               </Form.Group>
             </div>
           ))}
 
           <Button variant="btn btn-outline-primary" type="button" onClick={handleAddWordPair} className='add-word-button'>
-            <FontAwesomeIcon icon={faPlus} /> 
+            <FontAwesomeIcon icon={faPlus} /> Add Word Pair
           </Button>
+        </div>
+
+        <div className="form-section">
+          <Form.Group controlId="languageSelect">
+            <Form.Label>Select Language</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              required
+            >
+              <option value="">Select Language</option>
+              {languages.map((language, index) => (
+                <option key={index} value={language.isoCode}>
+                  {language.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
         </div>
 
         <Button variant="primary" type="submit" className="submit-button">

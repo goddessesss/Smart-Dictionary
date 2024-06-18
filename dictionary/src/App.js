@@ -7,6 +7,8 @@ import TestPage from './pages/TestPage';
 import CreateModule from './pages/CreateModule';
 import AuthPage from './pages/AuthPage';
 import './App.css'
+import Words from './pages/Words';
+import ModulePage from './pages/ModulePage';
 
 function App() {
   return (
@@ -15,13 +17,17 @@ function App() {
       <Router>
         <Routes>
           <Route path='/' element={<MainPage/>} />
+          <Route path='module' element={<ModulePage/>} />
           <Route path='detail' element={<ModuleDetail/>} />
           <Route path='test' element={<TestPage/>} />
           <Route path='create' element={<CreateModule/>} />
           <Route path='login' element={<AuthPage/>} />
+          <Route path="/module/:moduleId" element={<ModuleDetail/>}  />
+          <Route path='word' element={<Words/>} />
+
+
         </Routes>
       </Router>
-    
     </div>
   );
 }
