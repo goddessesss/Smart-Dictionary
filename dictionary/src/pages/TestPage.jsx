@@ -1,82 +1,112 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getModuleDetails } from '../http/moduleApi'; 
 import '../styles/TestPage.css';
 
-const terms = ["Software", "Hyperlink", "Wireless", "Hardware"];
-const definitions = [
-  "Програмне забезпечення",
-  "Гіперпосилання",
-  "Бездротовий",
-  "Апаратне забезпечення"
-];
-
 export default function TestPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const { moduleId } = useParams();
+  const [moduleDetails, setModuleDetails] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(10);
+  const [showResults, setShowResults] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (timeRemaining > 0) {
-        setTimeRemaining(prevTime => prevTime - 1);
-      } else {
-        setShowScore(true);
-        clearInterval(timer);
+    const fetchModuleDetails = async () => {
+      try {
+        const module = await getModuleDetails(moduleId);
+        setModuleDetails(module);
+        setOptions(generateOptions(module.words, 0));
+      } catch (error) {
+        console.error('Error fetching module details:', error);
       }
-    }, 1000);
+    };
 
-    return () => clearInterval(timer);
-  }, [timeRemaining]);
+    fetchModuleDetails();
+  }, [moduleId]);
 
-  const handleAnswerOptionClick = (isCorrect) => {
-    const nextQuestion = currentQuestion + 1;
+  const generateOptions = (words, correctIndex) => {
+    const correctAnswer = words[correctIndex].word.translations[0].translationText;
+    const incorrectAnswers = words
+      .filter((_, index) => index !== correctIndex)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3)
+      .map(wordObj => wordObj.word.translations[0].translationText);
 
+    const allOptions = [...incorrectAnswers, correctAnswer].sort(() => 0.5 - Math.random());
+    return allOptions;
+  };
+
+  const handleAnswerSelect = (answer) => {
+    if (answeredQuestions.includes(currentQuestionIndex)) {
+      return;
+    }
+
+    setSelectedAnswer(answer);
+    setIsCorrect(
+      answer.trim().toLowerCase() === moduleDetails.words[currentQuestionIndex].word.translations[0].translationText.trim().toLowerCase()
+    );
+
+    setAnsweredQuestions([...answeredQuestions, currentQuestionIndex]);
+  };
+
+  const handleNextQuestion = () => {
     if (isCorrect) {
       setScore(score + 1);
     }
 
-    if (nextQuestion < terms.length) {
-      setCurrentQuestion(nextQuestion);
-      setSelectedOption(null);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex === moduleDetails.words.length) {
+      setShowResults(true);
     } else {
-      setShowScore(true);
+      setCurrentQuestionIndex(nextIndex);
+      setOptions(generateOptions(moduleDetails.words, nextIndex));
     }
   };
 
-  const progressWidth = (timeRemaining / 10) * 100 + '%';
+  if (!moduleDetails) {
+    return <div className="loading-message">Loading module details...</div>;
+  }
+
+  if (showResults) {
+    return (
+      <div className="test-results">
+        <h2>Test Completed</h2>
+        <p>Your Score: {score} / {moduleDetails.words.length}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="test-container">
-      {!showScore ? (
-        <>
-          <div className="question-section">
-            <div className="question-count">
-              <span>Question {currentQuestion + 1}</span>/{terms.length}
+    <div className="test-page">
+      <div className="centered-content">
+        <div className="test-container">
+          <div className="test-label">Module Test: {moduleDetails.name}</div>
+          <div className="question">
+            <div className="question-number">
+              Question №{currentQuestionIndex + 1}: What is the definition of "{moduleDetails.words[currentQuestionIndex].word.name}"?
             </div>
-            <div className="choose-text">Choose the correct answer:</div>
-            <div className="question-text">{terms[currentQuestion]}</div>
-            <div className="progress-bar-container">
-              <div className="progress-bar" style={{ width: progressWidth }}></div>
+            <div className="answers">
+              {options.map((option, index) => (
+                <button 
+                  key={index} 
+                  className={`answer ${selectedAnswer === option ? (isCorrect ? 'correct' : 'incorrect') : ''}`}
+                  onClick={() => handleAnswerSelect(option)}
+                  disabled={answeredQuestions.includes(currentQuestionIndex)}
+                >
+                  {option}
+                </button>
+              ))}
             </div>
+            <button style={{marginTop:"20px"}} className="btn btn-primary" onClick={handleNextQuestion} disabled={!selectedAnswer}>Next</button>
           </div>
-          <div className="answer-section">
-            {definitions.map((option, index) => (
-              <button
-                key={index}
-                className="answer-button"
-                onClick={() => handleAnswerOptionClick(index === currentQuestion)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="score-section">
-          You scored {score} out of {terms.length}
         </div>
-      )}
+      </div>
     </div>
   );
 }

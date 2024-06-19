@@ -52,12 +52,13 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = () => {
     setToken(null);
     setUserId(null);
-    setUsername(null); 
-
+    setUsername(null);
+  
     localStorage.removeItem('authToken');
-    window.location.reload(); 
+  
+    window.location.href = '/';
   };
-
+  
   return (
     <AuthContext.Provider value={{ token, userId, username, handleLogin, handleLogout }}>
       {children}

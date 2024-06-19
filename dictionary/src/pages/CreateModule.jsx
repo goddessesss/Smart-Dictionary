@@ -153,8 +153,7 @@ export default function CreateModule() {
               as="select"
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              required
-            >
+              required>
               <option value="">Select Language</option>
               {languages.map((language, index) => (
                 <option key={index} value={language.isoCode}>
@@ -164,7 +163,6 @@ export default function CreateModule() {
             </Form.Control>
           </Form.Group>
         </div>
-
         <Button variant="primary" type="submit" className="submit-button">
           Submit
         </Button>

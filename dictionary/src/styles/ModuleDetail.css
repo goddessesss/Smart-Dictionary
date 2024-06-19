@@ -29,6 +29,7 @@
   .show-value {
     background-color: #f0f0f0;
     padding: 20px;
+    font-size: 30px;
     transform: translateY(-5px);
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   }

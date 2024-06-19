@@ -19,7 +19,7 @@ function App() {
           <Route path='/' element={<MainPage/>} />
           <Route path='module' element={<ModulePage/>} />
           <Route path='detail' element={<ModuleDetail/>} />
-          <Route path='test' element={<TestPage/>} />
+          <Route path='/module/:moduleId/test' element={<TestPage/>} />
           <Route path='create' element={<CreateModule/>} />
           <Route path='login' element={<AuthPage/>} />
           <Route path="/module/:moduleId" element={<ModuleDetail/>}  />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import '../styles/ModuleDetail.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faGraduationCap, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,6 @@ import { useAuth } from '../context/AuthContext';
 export default function ModuleDetail() {
   const { moduleId } = useParams();
   const { username } = useAuth();
-
   const [moduleDetails, setModuleDetails] = useState(null);
   const [currentTermIndex, setCurrentTermIndex] = useState(0);
   const [showDefinition, setShowDefinition] = useState(false);
@@ -49,7 +48,7 @@ export default function ModuleDetail() {
       await deleteModule(moduleId);
       console.log('Module deleted successfully');
       alert('Module deleted successfully');
-      window.location.href = '/module'; 
+      window.location.href = '/module'; // Используем window.location.href для перехода
     } catch (error) {
       console.error('Error deleting module:', error);
     }
@@ -99,16 +98,20 @@ export default function ModuleDetail() {
     );
   }
 
+  const handleTestClick = () => {
+    window.location.href = `/module/${moduleId}/test`;
+  };
+
   return (
     <div className='detail-container '>
       <div className='detail-label'>
         Module {moduleDetails.id}. {moduleDetails.name}
       </div>
       <div className="button-group"  style={{marginBottom:"15px"}}>
-        <button type="button" className="btn btn-primary">
+        <Link to={`/module/${moduleId}/test`} className="btn btn-primary">
           <FontAwesomeIcon icon={faGraduationCap}  />
           Test
-        </button>
+        </Link>
         {moduleDetails.id && (
           <button type="button" style={{ marginLeft: "5px" }}className="btn btn-danger" onClick={handleDeleteModule}>
             <FontAwesomeIcon icon={faTrash}  />

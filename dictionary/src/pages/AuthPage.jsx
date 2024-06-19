@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { loginUser, registerUser } from '../http/authApi';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function AuthPage() {
   const { handleLogin } = useAuth();
@@ -12,10 +13,8 @@ export default function AuthPage() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
 
-  const toggleMode = () => {
-    setIsLoginMode(prevMode => !prevMode);
-    setError(null);
-    setMessage('');
+  const handleToggleMode = () => {
+    setIsLoginMode((prevMode) => !prevMode);
   };
 
   const handleSubmit = async (event) => {
@@ -96,11 +95,8 @@ export default function AuthPage() {
         </form>
         {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
         {message && <p style={{ color: 'green', textAlign: 'center' }}>{message}</p>}
-        <p style={{ textAlign: "center" }}>
-          {isLoginMode ? "Don't have an account? " : "Already have an account? "}
-          <a href="#" onClick={toggleMode}>
-            {isLoginMode ? "Register here" : "Login here"}
-          </a>
+        <p className="form-toggle" onClick={handleToggleMode} style={{textAlign:"center"}}>
+          {isLoginMode ? 'Don\'t have an account?' : 'Already have an account?'}
         </p>
       </div>
     </div>

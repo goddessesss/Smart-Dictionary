@@ -2,9 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/MainPage.css';
-import book from '../assets/book.jpg'; 
+import book from '../assets/book.jpg';
+import { useAuth } from '../context/AuthContext';
 
 export default function MainPage() {
+  const { userId } = useAuth(); 
+
   return (
     <div className="main-page">
       <div className="content-page">
@@ -17,7 +20,11 @@ export default function MainPage() {
                 With our user-friendly interface and comprehensive content, you'll find 
                 yourself mastering new words in no time.
               </p>
-              <Link to="/login" className="btn btn-primary">Start Learning</Link>
+              {userId ? (
+                <Link to="/module" className="btn btn-primary">Start Learning</Link>
+              ) : (
+                <Link to="/login" className="btn btn-primary">Start Learning</Link>
+              )}
             </div>
           </div>
           <div className="content-right">
